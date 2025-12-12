@@ -1,13 +1,21 @@
 {
-  "name": "@thulite/doks-core",
-  "version": "1.8.3",
-  "description": "Doks core",
-  "author": "Thulite",
+  "name": "doks-core",
+  "version": "0.1.0",
+  "description": "Doks core theme for Hugo",
+  "author": "vovanukas",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thuliteio/doks-core.git"
+    "url": "https://github.com/vovanukas/doks-core.git"
   },
+  "files": [
+    "archetypes",
+    "assets",
+    "data",
+    "i18n",
+    "layouts",
+    "static"
+  ],
   "scripts": {
     "format": "prettier **/** -w -c"
   },
@@ -23,9 +31,5 @@
   },
   "engines": {
     "node": ">=20.11.0"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   }
 }

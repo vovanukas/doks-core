@@ -7,19 +7,12 @@
 
 /* eslint-disable no-undef, guard-for-in */
 
-/**
- * @file
- * A JavaScript file for flexsearch.
- */
-
-// import * as FlexSearch from 'flexsearch';
 import Index from 'flexsearch';
 
 (function () {
 
   'use strict';
 
-  // const index = new FlexSearch.Document({
   const index = new Index.Document({
     tokenize: 'forward',
     document: {
@@ -47,27 +40,21 @@ import Index from 'flexsearch';
   function showResults(items) {
     const template = document.querySelector('template').content;
     const fragment = document.createDocumentFragment();
-
     const results = document.querySelector('.search-results');
     results.textContent = '';
 
+    const query = document.querySelector('.search-text');
     const itemsLength = Object.keys(items).length;
 
-    // Show/hide "No recent searches" and "No search results" messages
     if ((itemsLength === 0) && (query.value === '')) {
-      // Hide "No search results" message
       document.querySelector('.search-no-results').classList.add('d-none');
-      // Show "No recent searches" message
       document.querySelector('.search-no-recent').classList.remove('d-none');
     } else if ((itemsLength === 0) && (query.value !== '')) {
-      // Hide "No recent searches" message
       document.querySelector('.search-no-recent').classList.add('d-none');
-      // Show "No search results" message
       const queryNoResults = document.querySelector('.query-no-results');
       queryNoResults.innerText = query.value;
       document.querySelector('.search-no-results').classList.remove('d-none');
     } else {
-      // Hide both "No recent searches" and "No search results" messages
       document.querySelector('.search-no-recent').classList.add('d-none');
       document.querySelector('.search-no-results').classList.add('d-none');
     }
@@ -78,26 +65,27 @@ import Index from 'flexsearch';
       const a = result.querySelector('a');
       const time = result.querySelector('time');
       const content = result.querySelector('.content');
+
       a.innerHTML = item.title;
       a.href = item.permalink;
       time.innerText = item.date;
       content.innerHTML = item.summary;
       fragment.appendChild(result);
     }
-
     results.appendChild(fragment);
   }
 
   function doSearch() {
     const query = document.querySelector('.search-text').value.trim();
-    const limit = {{ .searchLimit }};
+    const limit = {{ site.Params.doks.searchLimit }}; // Using site.Params access
+
     const results = index.search({
       query: query,
       enrich: true,
       limit: limit,
     });
-    const items = {};
 
+    const items = {};
     results.forEach(function (result) {
       result.result.forEach(function (r) {
         items[r.id] = r.doc;
@@ -113,9 +101,11 @@ import Index from 'flexsearch';
       e.preventDefault();
       doSearch();
     });
+
     searchform.addEventListener('input', function () {
       doSearch();
     });
+
     document.querySelector('.search-loading').classList.add('d-none');
     document.querySelector('.search-input').classList.remove('d-none');
     document.querySelector('.search-text').focus();
@@ -123,7 +113,8 @@ import Index from 'flexsearch';
 
   function buildIndex() {
     document.querySelector('.search-loading').classList.remove('d-none');
-    fetch("{{ site.LanguagePrefix }}/search-index.json")
+
+    fetch("{{ relLangURL "search-index.json" }}")
       .then(function (response) {
         return response.json();
       })
@@ -136,4 +127,6 @@ import Index from 'flexsearch';
 
   buildIndex();
   enableUI();
+
 })();
+
